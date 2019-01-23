@@ -7,6 +7,11 @@ const Aspirations = function (url) {
 };
 
 Aspirations.prototype.bindEvents = function () {
+  PubSub.subscribe('AspirationView:aspiration-delete-clicked', (evt) => {
+    this.deleteAspiration(evt.detail);
+  })
+
+
   PubSub.subscribe('AspirationFormView:aspiration-submitted', (evt) => {
     this.postAspiration(evt.detail);
   })
@@ -28,8 +33,12 @@ Aspirations.prototype.postAspiration = function (aspiration) {
   .catch(console.error)
 };
 
-
-
-
+Aspirations.prototype.deleteAspiration = function (aspirationID) {
+  this.request.delete(aspirationID)
+  .then((aspirations) => {
+    PubSub.publish('Aspirations:data-loaded', aspirations);
+  })
+  .catch(console.error)
+};
 
 module.exports = Aspirations;
