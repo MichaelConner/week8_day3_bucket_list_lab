@@ -7,16 +7,25 @@ const Aspirations = function (url) {
 };
 
 Aspirations.prototype.bindEvents = function () {
-
+  PubSub.subscribe('AspirationFormView:aspiration-submitted', (evt) => {
+    this.postAspiration(evt.detail);
+  })
 };
 
 Aspirations.prototype.getData = function () {
   this.request.get()
       .then((aspirations) => {
-        console.log(aspirations);
         PubSub.publish('Aspirations:data-loaded', aspirations);
       })
       .catch(console.error);
+};
+
+Aspirations.prototype.postAspiration = function (aspiration) {
+  this.request.post(aspiration)
+  .then((aspirations) => {
+    PubSub.publish('Aspirations:data-loaded', aspirations);
+  })
+  .catch(console.error)
 };
 
 

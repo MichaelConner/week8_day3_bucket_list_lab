@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Aspirations = __webpack_require__(/*! ./models/aspirations.js */ \"./client/src/models/aspirations.js\")\nconst AspirationsListView = __webpack_require__(/*! ./views/aspirations_list_view.js */ \"./client/src/views/aspirations_list_view.js\")\n\ndocument.addEventListener('DOMContentLoaded', () => {\n  console.log('JS loaded');\n\n\n  const aspirationsContainer = document.querySelector('div#bucket-list');\n\n  const aspirationsListView = new AspirationsListView(aspirationsContainer)\n  aspirationsListView.bindEvents()\n\n  const url = 'http://localhost:3000/api/listitems';\n  const aspirations = new Aspirations(url);\n  // aspirations.bindEvents();\n  aspirations.getData();\n});\n\n\n//# sourceURL=webpack:///./client/src/app.js?");
+eval("const Aspirations = __webpack_require__(/*! ./models/aspirations.js */ \"./client/src/models/aspirations.js\")\nconst AspirationsListView = __webpack_require__(/*! ./views/aspirations_list_view.js */ \"./client/src/views/aspirations_list_view.js\")\nconst AspirationFormView = __webpack_require__(/*! ./views/aspiration_form_view.js */ \"./client/src/views/aspiration_form_view.js\")\n\ndocument.addEventListener('DOMContentLoaded', () => {\n  console.log('JS loaded');\n\n  const aspirationForm = document.querySelector('form#aspiration-form');\n\n  const aspirationFormView = new AspirationFormView(aspirationForm);\n  console.log(aspirationFormView);\n  aspirationFormView.bindEvents();\n\n\n  const aspirationsContainer = document.querySelector('div#bucket-list');\n  const aspirationsListView = new AspirationsListView(aspirationsContainer)\n  aspirationsListView.bindEvents()\n\n  const url = 'http://localhost:3000/api/listitems';\n  const aspirations = new Aspirations(url);\n  aspirations.bindEvents();\n  aspirations.getData();\n});\n\n\n//# sourceURL=webpack:///./client/src/app.js?");
 
 /***/ }),
 
@@ -126,7 +126,18 @@ eval("const RequestHelper = function (url) {\n  this.url = url;\n};\n\nRequestHe
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const RequestHelper = __webpack_require__(/*! ../helpers/request_helper.js */ \"./client/src/helpers/request_helper.js\");\nconst PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./client/src/helpers/pub_sub.js\");\n\nconst Aspirations = function (url) {\n  this.url = url;\n  this.request = new RequestHelper(this.url);\n};\n\nAspirations.prototype.bindEvents = function () {\n\n};\n\nAspirations.prototype.getData = function () {\n  this.request.get()\n      .then((aspirations) => {\n        console.log(aspirations);\n        PubSub.publish('Aspirations:data-loaded', aspirations);\n      })\n      .catch(console.error);\n};\n\n\n\n\n\nmodule.exports = Aspirations;\n\n\n//# sourceURL=webpack:///./client/src/models/aspirations.js?");
+eval("const RequestHelper = __webpack_require__(/*! ../helpers/request_helper.js */ \"./client/src/helpers/request_helper.js\");\nconst PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./client/src/helpers/pub_sub.js\");\n\nconst Aspirations = function (url) {\n  this.url = url;\n  this.request = new RequestHelper(this.url);\n};\n\nAspirations.prototype.bindEvents = function () {\n  PubSub.subscribe('AspirationFormView:aspiration-submitted', (evt) => {\n    this.postAspiration(evt.detail);\n  })\n};\n\nAspirations.prototype.getData = function () {\n  this.request.get()\n      .then((aspirations) => {\n        PubSub.publish('Aspirations:data-loaded', aspirations);\n      })\n      .catch(console.error);\n};\n\nAspirations.prototype.postAspiration = function (aspiration) {\n  this.request.post(aspiration)\n  .then((aspirations) => {\n    PubSub.publish('Aspirations:data-loaded', aspirations);\n  })\n  .catch(console.error)\n};\n\n\n\n\n\nmodule.exports = Aspirations;\n\n\n//# sourceURL=webpack:///./client/src/models/aspirations.js?");
+
+/***/ }),
+
+/***/ "./client/src/views/aspiration_form_view.js":
+/*!**************************************************!*\
+  !*** ./client/src/views/aspiration_form_view.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./client/src/helpers/pub_sub.js\")\n\nconst AspirationFormView = function(form) {\n  this.form = form\n}\n\nAspirationFormView.prototype.bindEvents = function () {\n  this.form.addEventListener('submit', (evt) => {\n    console.log(evt);\n    this.handleSubmit(evt)\n  })\n};\n\nAspirationFormView.prototype.handleSubmit = function (evt) {\n  evt.preventDefault();\n\n  const newAspiration = this.createAspiration(evt.target);\n  console.log(newAspiration);\n  PubSub.publish('AspirationFormView:aspiration-submitted', newAspiration);\n\n  evt.target.reset()\n\n};\n\nAspirationFormView.prototype.createAspiration = function (form) {\n  const newAspiration = {\n    aspiration: form.aspiration.value\n  };\n  console.log(newAspiration);\n  return newAspiration;\n\n};\n\n\n\n\nmodule.exports = AspirationFormView;\n\n\n//# sourceURL=webpack:///./client/src/views/aspiration_form_view.js?");
 
 /***/ }),
 
