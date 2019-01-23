@@ -7,8 +7,6 @@ const AspirationsListView = function (container) {
 
 AspirationsListView.prototype.bindEvents = function () {
   PubSub.subscribe('Aspirations:data-loaded', (evt) => {
-    console.log(evt);
-    
     this.render(evt.detail);
   });
 

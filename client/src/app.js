@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const aspirationForm = document.querySelector('form#aspiration-form');
 
   const aspirationFormView = new AspirationFormView(aspirationForm);
-  console.log(aspirationFormView);
   aspirationFormView.bindEvents();
 
 

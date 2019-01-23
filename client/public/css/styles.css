@@ -1,7 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand');
+
+body {
+  text-align: center;
+  font-size: 20pt;
+  background-color: #CCE6FF;
+  font-family: Quicksand;
+}
+
 .delete-btn {
   width: 70px;
   height: 20px;
-  background-color: red;
+  background-color: #FF4D4D;
 }
 
 button.delete-btn {
