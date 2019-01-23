@@ -20,5 +20,5 @@ MongoClient.connect('mongodb://localhost:27017')
   .catch(console.err)
 
 app.listen(3000, function () {
-  console.log(`Lisatening on ${this.address().port}`);
+  console.log(`Listening on ${this.address().port}`);
 });
