@@ -20,6 +20,7 @@ AspirationView.prototype.render = function (input) {
 AspirationView.prototype.createDeleteButton = function (aspirationID) {
   const button = document.createElement('button');
   button.classList.add('delete-btn');
+  button.textContent = 'Delete'
   button.value = aspirationID;
 
   button.addEventListener('click', (evt) => {
